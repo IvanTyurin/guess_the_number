@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.purple,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Practice 2'),
     );
   }
 }
@@ -30,6 +32,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Random rnd = Random();
+  TextEditingController controller = TextEditingController();
+
+  int computerNum;
+  String text = "Try to guess the number";
+  bool userWin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    computerNum = rnd.nextInt(100);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +51,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: _buildScreenBody(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      body: _buildScreenBody(), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 
@@ -54,7 +63,7 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             SizedBox(height: 50,),
-            Text("Try to guess the number",
+            Text("$text",
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -65,16 +74,18 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Container(
                   height: 30,
-                  width: 200,
+                  width: 100,
                   child: TextField(
                     textAlign: TextAlign.center,
+                    controller: controller,
+                    keyboardType: TextInputType.number,
                   ),
                 ),
                 SizedBox(
                   width: 20,
                 ),
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: _tryBtnPressed,
                   color: Colors.purple,
                   textColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 5, horizontal: 15),
@@ -82,9 +93,54 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ],
             ),
+            Visibility(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [IconButton(
+                    icon: Icon(
+                      Icons.refresh,
+                      color: Colors.purple,
+                      size: 40,
+                    ),
+                    onPressed: _refreshButton,
+                    alignment: Alignment.center,
+                )],
+              ),
+              visible: userWin,
+            ),
+            // Text("$computerNum")
           ],
         ),
       ),
     );
+  }
+
+  void _tryBtnPressed() {
+    String inputData = controller.text;
+    String message = "";
+    int userNum = int.parse(inputData);
+
+    if(userNum > computerNum) {
+      message = "To much";
+    }
+    if(userNum == computerNum) {
+      message = "Congratulations!";
+      userWin = true;
+    }
+    if(userNum < computerNum) {
+      message = "Few";
+    }
+
+    setState(() {
+      text = message;
+    });
+  }
+
+  void _refreshButton() {
+    userWin = !userWin;
+    computerNum = rnd.nextInt(100);
+    setState(() {
+      text = "Try to guess the number";
+    });
   }
 }
