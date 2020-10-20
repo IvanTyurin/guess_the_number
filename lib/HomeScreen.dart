@@ -11,6 +11,7 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController controller = TextEditingController();
 
   int computerNum;
+  int _count = 0;
   String text = "Try to guess the number";
   bool userWin = false;
 
@@ -88,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               visible: userWin,
             ),
-            // Text("$computerNum")
+            _attemptCounter(),
           ],
         ),
       ),
@@ -99,6 +100,8 @@ class _HomeScreenState extends State<HomeScreen> {
     String inputData = controller.text;
     String message = "";
     int userNum = int.parse(inputData);
+
+    _count++;
 
     if (userNum > computerNum) {
       message = "To much";
@@ -121,6 +124,21 @@ class _HomeScreenState extends State<HomeScreen> {
     computerNum = randomizer.nextInt(100);
     setState(() {
       text = "Try to guess the number";
+      _count = 0;
     });
+  }
+
+  Widget _attemptCounter() {
+    return Container(
+      height: 30,
+      width: 200,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [Text(
+          'Attempt counter: $_count',
+          style: TextStyle(),
+        )],
+      )
+    );
   }
 }
