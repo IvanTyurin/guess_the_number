@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'SettingsScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -11,6 +13,8 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController controller = TextEditingController();
 
   int computerNum;
+  int _minRandomValue = 0;
+  int _maxRandomValue = 100;
   int _count = 0;
   String text = "Try to guess the number";
   bool userWin = false;
@@ -18,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    computerNum = randomizer.nextInt(100);
+    _loadSettingsValue();
   }
 
   @override
@@ -26,6 +30,17 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Practice 2'),
+        actions: [
+          IconButton(
+            icon: Icon(
+              Icons.settings,
+              color: Colors.white,
+              size: 30,
+            ),
+            onPressed: _showSettingsScreen,
+            alignment: Alignment.center,
+          ),
+        ],
       ),
       body:
           _buildScreenBody(), // This trailing comma makes auto-formatting nicer for build methods.
@@ -96,6 +111,21 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _attemptCounter() {
+    return Container(
+        height: 30,
+        width: 200,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Attempt counter: $_count',
+              style: TextStyle(),
+            )
+          ],
+        ));
+  }
+
   void _tryBtnPressed() {
     String inputData = controller.text;
     String message = "";
@@ -121,24 +151,31 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _refreshButton() {
     userWin = !userWin;
-    computerNum = randomizer.nextInt(100);
+    computerNum =
+        randomizer.nextInt(_maxRandomValue - _minRandomValue) + _minRandomValue;
     setState(() {
       text = "Try to guess the number";
       _count = 0;
     });
   }
 
-  Widget _attemptCounter() {
-    return Container(
-      height: 30,
-      width: 200,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [Text(
-          'Attempt counter: $_count',
-          style: TextStyle(),
-        )],
-      )
-    );
+  void _showSettingsScreen() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+  }
+
+  void _loadSettingsValue() async {
+    SharedPreferences _sharedPreferences =
+        await SharedPreferences.getInstance();
+
+    if (_sharedPreferences != null &&
+        _sharedPreferences.containsKey("min") &&
+        _sharedPreferences.containsKey("max")) {
+      _minRandomValue = _sharedPreferences.getInt("min");
+      _maxRandomValue = _sharedPreferences.getInt("max");
+    }
+
+    computerNum =
+        randomizer.nextInt(_maxRandomValue - _minRandomValue) + _minRandomValue;
   }
 }
