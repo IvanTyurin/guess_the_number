@@ -1,39 +1,13 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
-import 'HomeScreen.dart';
 
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class HomeScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Guess the Number',
-      theme: ThemeData(
-        primarySwatch: Colors.purple,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: HomeScreen(),
-    );
-  }
-}
-<<<<<<< Updated upstream
-=======
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  Random rnd = Random();
+class _HomeScreenState extends State<HomeScreen> {
+  Random randomizer = Random();
   TextEditingController controller = TextEditingController();
 
   int computerNum;
@@ -43,14 +17,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    computerNum = rnd.nextInt(100);
+    computerNum = randomizer.nextInt(100);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('Practice 2'),
       ),
       body:
           _buildScreenBody(), // This trailing comma makes auto-formatting nicer for build methods.
@@ -144,10 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _refreshButton() {
     userWin = !userWin;
-    computerNum = rnd.nextInt(100);
+    computerNum = randomizer.nextInt(100);
     setState(() {
       text = "Try to guess the number";
     });
   }
 }
->>>>>>> Stashed changes
